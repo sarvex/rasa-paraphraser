@@ -120,9 +120,7 @@ class NgramDownweightModel(FairseqEncoderDecoderModel):
         # Initialize our Encoder and Decoder.
         encoder = NgramDownweightEncoder(args=args, dictionary=task.source_dictionary)
         decoder = NgramDownweightDecoder(args=args, dictionary=task.target_dictionary)
-        model = NgramDownweightModel(encoder, decoder)
-
-        return model
+        return NgramDownweightModel(encoder, decoder)
 
     def get_normalized_probs(self, decoder_out, log_probs):
         return decoder_out[0]

@@ -111,7 +111,7 @@ class NMTParaphraser:
     def _fill_hardware_args(args):
         gpu = torch.cuda.is_available()
         args["cpu"] = not gpu
-        args["fp16"] = True if gpu else False
+        args["fp16"] = bool(gpu)
         args["memory_efficient_fp16"] = False
 
     def _load_model(self, lite_mode):
@@ -190,7 +190,7 @@ class NMTParaphraser:
 
         # we also need a dummy output file with the language tag
         with open("test.tgt", "wt") as fout:
-            for sent in sp_sents:
+            for _ in sp_sents:
                 fout.write(f"<{lang}> \n")
 
     def preprocess_nmt(self):
@@ -245,7 +245,7 @@ class NMTParaphraser:
                     src_str = self.src_dict.string(src_tokens, self.args.remove_bpe)
 
                     # Process top predictions
-                    for j, hypo in enumerate(hypos[i][: self.args.nbest]):
+                    for hypo in hypos[i][: self.args.nbest]:
                         (
                             hypo_tokens,
                             hypo_str,
@@ -270,7 +270,7 @@ class NMTParaphraser:
         cleaned_paraphrases = []
         for paraphrases in all_paraphrases:
             paraphrases = [p.replace(f"<{lang_id}>", "").strip() for p in paraphrases]
-            paraphrases = [p.replace(f"<unk>", "").strip() for p in paraphrases]
+            paraphrases = [p.replace("<unk>", "").strip() for p in paraphrases]
             cleaned_paraphrases.append(paraphrases)
 
         return cleaned_paraphrases

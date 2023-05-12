@@ -15,8 +15,7 @@ def read_from_csv(file_path: Text) -> List[Text]:
     collection = []
     with open(file_path, newline="") as csvfile:
         reader = csv.reader(csvfile, quotechar='"')
-        for line in reader:
-            collection.append(line)
+        collection.extend(iter(reader))
     return collection
 
 
@@ -83,9 +82,7 @@ def serialize_collection_as_csv(collection: List[Message]) -> List[List[Text]]:
         intent = message.get("intent")
         paraphrases = message.get("metadata").get("paraphrases")
 
-        for paraphrase in paraphrases:
-            csv_lines.append([text, intent, paraphrase])
-
+        csv_lines.extend([text, intent, paraphrase] for paraphrase in paraphrases)
     return csv_lines
 
 
@@ -96,5 +93,5 @@ def write_collection(collection: List[Message], output_directory: Text, format: 
     if format == "csv":
         csv_content = serialize_collection_as_csv(collection)
         dump_to_csv(csv_content, output_file_path)
-    elif format == "yaml" or format == "yml":
+    elif format in ["yaml", "yml"]:
         dump_to_yaml(collection, output_file_path)

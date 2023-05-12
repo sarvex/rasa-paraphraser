@@ -226,7 +226,7 @@ def make_vocab_start_map(vocab):
                 ucase2case[subword.lower()].add(subword)
 
     # build mapping from every word to every prefix that starts that word (where "starts" ignores case)
-    mapx = dict()
+    mapx = {}
     for word in vocab:
         toks = set()
         for ii in range(1, len(word) + 1):
